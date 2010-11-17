@@ -1,0 +1,30 @@
+SinaWeibo PHP SDK
+---------------------
+This is rewrite PHP SDK for Sina Weibo(http://t.sina.com.cn/), a popular twitter clone in China.
+
+Notes:
+This SDK need PECL OAuth extention ( http://pecl.php.net/package/oauth )
+
+
+INSTALL
+---------
+1. pecl install oauth
+2. git clone git://github.com/nightsailer/sinaweibo.git
+
+USAGE
+---------
+See the code
+
+SEE ALSO
+---------
+
+ * http://t.sina.com.cn/
+ * Sina Weibo Official API manual: http://open.t.sina.com.cn/wiki/index.php/API文档
+
+Author
+-----------
+nightsailer  (@nightsailer)
+
+License
+-----------
+This software is released under the GNU GPLv3, which should have been distributed with this software.
