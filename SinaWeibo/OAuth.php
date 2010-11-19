@@ -9,13 +9,13 @@
 class SinaWeibo_OAuth {
     public $host = 'http://api.t.sina.com.cn';
     public $format = 'json';
+    public $decode_json = true;
     public $http_info;
     public $access_token_url = 'http://api.t.sina.com.cn/oauth/access_token';
     public $authenticate_url = 'http://api.t.sina.com.cn/oauth/authenticate';
     public $authorize_url    = 'http://api.t.sina.com.cn/oauth/authorize';
     public $request_token_url= 'http://api.t.sina.com.cn/oauth/request_token';
 
-    public static $user_agent = 'SinaWeibo PHP OAuth v0.0.1 (http://github.com/nightsailer/sinaweibo)';
     protected static $http_method_constants = array(
         'POST' => OAUTH_HTTP_METHOD_POST,
         'PUT'  => OAUTH_HTTP_METHOD_PUT,
@@ -33,16 +33,11 @@ class SinaWeibo_OAuth {
     public function __construct($consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL) {
         $this->consumer_key = $consumer_key;
         $this->consumer_secret = $consumer_secret;
-        $this->oauth_token = $oauth_token;
-        $this->oauth_token_secret = $oauth_token_secret;
-        if (!empty($oauth_token) && !empty($oauth_token_secret)) {
-            $this->token = array(
-                'oauth_token_secret' => $oauth_token_secret,
-                'oauth_token' => $oauth_token,
-            );
-        }
         $this->oauth = new OAuth($this->consumer_key,$this->consumer_secret,OAUTH_SIG_METHOD_HMACSHA1,OAUTH_AUTH_TYPE_AUTHORIZATION);
         $this->oauth->setRequestEngine(OAUTH_REQENGINE_CURL);
+        if (!empty($oauth_token) && !empty($oauth_token_secret)) {
+            $this->set_token($oauth_token,$oauth_token_secret);
+        }
     }
 
     /**
@@ -66,7 +61,7 @@ class SinaWeibo_OAuth {
             }
             return $this->token;
         } catch (OAuthException $e) {
-            throw new SinaWeibo_Exception('OAuth Exception, Response:'.$e->lastResponse);
+            throw new SinaWeibo_Exception('OAuth Exception,Error:'.$e->getMessage());
         }
     }
 
@@ -115,7 +110,7 @@ class SinaWeibo_OAuth {
             }
             return $this->token;
         } catch (OAuthException $e) {
-            throw new SinaWeibo_Exception('OAuth Exception, Response:'.$e->lastResponse);
+            throw new SinaWeibo_Exception('OAuth Exception,Error:'.$e->getMessage());
         }
     }
 
@@ -139,19 +134,16 @@ class SinaWeibo_OAuth {
             $http_method = OAUTH_HTTP_METHOD_POST;
         }
         $oauth = $this->oauth;
-        $http_headers['User-Agent'] = self::$user_agent;
-        if ($multipart) {
-            $http_method = OAUTH_HTTP_METHOD_POST;
-        }
         try {
             if (!$oauth->fetch($url,$parameters,$http_method)) {
                 throw new SinaWeibo_Exception("Failed fetching resource:$url, response was: " . $oauth->getLastResponse());
             }
-            $this->http_info = $oauth->getLastResponseInfo();
         } catch (OAuthException $e) {
-            throw new SinaWeibo_Exception('OAuth Exception, Response:'.$e->lastResponse);
+            var_dump($e);
+            $this->http_info = $oauth->getLastResponseInfo();
+            throw new SinaWeibo_Exception('OAuth Exception,Error:'.$e->getMessage());
         }
-        $reponse = $oauth->getLastResponse();
+        $response = $oauth->getLastResponse();
         if ($this->format === 'json' && $this->decode_json) {
             return json_decode($response, true);
         }
@@ -183,6 +175,16 @@ class SinaWeibo_OAuth {
      */
     public function delete($url, $parameters = array()) {
         return $this->oauth_fetch($url,$parameters,'DELETE');
+    }
+
+    public function set_token($oauth_token,$oauth_token_secret) {
+        $this->token['oauth_token'] = $oauth_token;
+        $this->token['oauth_token_secret'] = $oauth_token_secret;
+        $this->oauth->setToken($oauth_token,$oauth_token_secret);
+    }
+
+    public function debug($enabled=true) {
+        $this->oauth->debug=$enabled;
     }
 }
 ?>

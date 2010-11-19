@@ -742,4 +742,8 @@ class SinaWeibo_Client {
         $params = array('ids' => $ids);
         return $this->oauth->post('http://api.t.sina.com.cn/favorites/destroy_batch.json',$params);
     }
+
+    public function oauth() {
+        return $this->oauth;
+    }
 }
