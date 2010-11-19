@@ -51,10 +51,7 @@ class SinaWeibo_OAuth {
         try {
             $response = $oauth->getRequestToken($this->request_token_url,$oauth_callback_url);
             if (!empty($response)) {
-                $this->token = array(
-                    'oauth_token' => $response['oauth_token'],
-                    'oauth_token_secret' => $response['oauth_token_secret'],
-                );
+                $this->set_token($response['oauth_token'],$response['oauth_token_secret']);
             }
             else {
                 throw new SinaWeibo_Exception('Failed fetching request token: response was: '. $oauth->getLastResponse());
@@ -100,10 +97,7 @@ class SinaWeibo_OAuth {
             $oauth->setToken($token['oauth_token'],$token['oauth_token_secret']);
             $access_token_info = $oauth->getAccessToken($this->access_token_url,null,$oauth_verifier);
             if (!empty($access_token_info)) {
-                $this->token = array(
-                    'oauth_token' => $access_token_info['oauth_token'],
-                    'oauth_token_secret' => $access_token_info['oauth_token_secret'],
-                );
+                $this->set_token($access_token_info['oauth_token'],$access_token_info['oauth_token_secret']);
             }
             else {
                 throw new SinaWeibo_Exception("Failed fetching access token, response was: " . $oauth->getLastResponse());
@@ -139,7 +133,6 @@ class SinaWeibo_OAuth {
                 throw new SinaWeibo_Exception("Failed fetching resource:$url, response was: " . $oauth->getLastResponse());
             }
         } catch (OAuthException $e) {
-            var_dump($e);
             $this->http_info = $oauth->getLastResponseInfo();
             throw new SinaWeibo_Exception('OAuth Exception,Error:'.$e->getMessage());
         }

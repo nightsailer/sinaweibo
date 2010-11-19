@@ -146,7 +146,7 @@ class SinaWeibo_Client {
      */
     public function get_comments_by_id($id,$params=array()) {
         $default = array('page' => 1, 'count' => 20);
-        $params['id'] = $sid;
+        $params['id'] = $id;
         return $this->oauth->get('http://api.t.sina.com.cn/statuses/comments.json',$params+$default);
     }
 
@@ -260,7 +260,7 @@ class SinaWeibo_Client {
      * @return array
      */
     public function destroy($id) {
-        return $this->oauth->delete('http://api.t.sina.com.cn/statuses/destroy/'.$sid.'.json');
+        return $this->oauth->delete('http://api.t.sina.com.cn/statuses/destroy/'.$id.'.json');
     }
 
     /**
