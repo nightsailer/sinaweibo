@@ -610,7 +610,7 @@ class SinaWeibo_Client {
     public function update_avatar($pic_path) {
         $params = array();
 		$params['image'] = "@".$pic_path;
-		return $this->oauth->post( 'http://api.t.sina.com.cn/account/update_profile_image.json',$params,true);
+		return $this->oauth->post('http://api.t.sina.com.cn/account/update_profile_image.json',$params,true);
     }
 
     /**
@@ -627,7 +627,7 @@ class SinaWeibo_Client {
      * @return array
      */
     public function update_profile($profile=array()) {
-        return $this->oauth->post( 'http://api.t.sina.com.cn/account/update_profile_image.json',$profile);
+        return $this->oauth->post( 'http://api.t.sina.com.cn/account/update_profile.json',$profile);
     }
 
     /**
